@@ -56,7 +56,7 @@ const configs: IConfigs = {
       domain: '.nguyenconggioi.tech',
     },
     environment: Environment.production,
-    enableSwagger: false,
+    enableSwagger: true,
   },
 
   [Environment.localhost]: {

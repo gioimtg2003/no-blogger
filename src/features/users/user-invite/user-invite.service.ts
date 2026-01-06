@@ -4,6 +4,7 @@ import {
   InviteType,
   TeamError,
   USER_INVITE_TOKEN_EXPIRATION,
+  UserError,
   UserJoinRequestStatus,
 } from '@constants';
 import { CryptoService } from '@features/crypto';
@@ -38,6 +39,16 @@ export class UserInviteService {
   async create(userId: number, inviteData: Partial<UserInvite>) {
     const { email, type } = inviteData ?? {};
 
+    const finUser = await this.userTeamService.findUserByIdOrEmail(
+      email ?? '',
+      ['id'],
+    );
+    if (finUser) {
+      this.logger.error(
+        `User with email ${email} already exists, cannot create invite`,
+      );
+      throw new BadRequestException(UserError.USER_ALREADY_EXISTS);
+    }
     // suffix :0 indicates the first use of the invite, if re-invited, it will be :1, :2, ...
     const uid = `${this.cryptoService.generateToken(this.tokenLength)}:0`;
     const invite = this.userInviteRepository.create({

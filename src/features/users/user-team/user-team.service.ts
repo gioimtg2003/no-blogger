@@ -57,13 +57,18 @@ export class UserTeamService {
     return users;
   }
 
-  async findUserById(
-    id: number,
+  async findUserByIdOrEmail(
+    query: number | string,
     selectFields: FindOneOptions<User>['select'] = [],
     relations: string[] = [],
   ) {
+    const whereCondition =
+      typeof query === 'number' ? { id: query } : { email: query as string };
     const user = await this.userRepository.findOne({
-      where: { id },
+      where: {
+        ...whereCondition,
+        teams: { id: In([this.contextService.getData('tenantId')]) },
+      },
       select: selectFields,
       relations: relations?.length ? relations : undefined,
     });
@@ -82,7 +87,7 @@ export class UserTeamService {
   ) {
     this.logger.log(`Removing user ${userId} from team ${teamId}`);
 
-    const user = await this.findUserById(
+    const user = await this.findUserByIdOrEmail(
       userId,
       {
         id: true,
@@ -136,7 +141,7 @@ export class UserTeamService {
       `Adding user ${userId} to team ${this.contextService.getData('tenantId')}`,
     );
 
-    const user = await this.findUserById(
+    const user = await this.findUserByIdOrEmail(
       userId,
       {
         id: true,
@@ -185,7 +190,7 @@ export class UserTeamService {
       `Creating user ${user.email} to team ${this.contextService.getData('tenantId')}`,
     );
 
-    const currentUser = await this.findUserById(
+    const currentUser = await this.findUserByIdOrEmail(
       userId,
       {
         id: true,
