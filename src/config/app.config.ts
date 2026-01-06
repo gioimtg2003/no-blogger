@@ -43,7 +43,7 @@ const configs: IConfigs = {
       domain: 'localhost',
     },
     environment: Environment.development,
-    enableSwagger: false,
+    enableSwagger: true,
   },
 
   [Environment.production]: {
@@ -56,7 +56,7 @@ const configs: IConfigs = {
       domain: '.nguyenconggioi.tech',
     },
     environment: Environment.production,
-    enableSwagger: true,
+    enableSwagger: false,
   },
 
   [Environment.localhost]: {
