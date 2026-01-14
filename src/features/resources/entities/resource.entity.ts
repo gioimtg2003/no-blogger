@@ -2,7 +2,7 @@ import { BaseEntity } from '@common/entities/base.entity';
 import { DATABASE_TABLES, ResourceType, SYSTEM_RESOURCE } from '@constants';
 import { Content } from '@features/content/entities/content.entity';
 import { Team } from '@features/teams/entities/team.entity';
-import { Column, Entity, Index, ManyToOne, OneToMany, Relation } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, Relation } from 'typeorm';
 
 @Entity(DATABASE_TABLES.RESOURCES)
 export class Resource extends BaseEntity {
@@ -14,8 +14,7 @@ export class Resource extends BaseEntity {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Index({ unique: true })
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @Column({ type: 'varchar', length: 255 })
   slug: string;
 
   @Column({ type: 'enum', enum: ResourceType, default: ResourceType.BLOG })
