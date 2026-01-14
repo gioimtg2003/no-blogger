@@ -46,7 +46,7 @@ importers:
         version: 6.4.0(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@10.4.20(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@10.4.20)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)
       '@nestjs/typeorm':
         specifier: ^11.0.0
-        version: 11.0.0(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@10.4.20(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@10.4.20)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.27(ioredis@5.8.1)(pg@8.16.3)(redis@5.9.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.13.21)(@types/node@20.19.13)(typescript@5.9.2)))
+        version: 11.0.0(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@10.4.20(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@10.4.20)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.27(ioredis@5.8.2)(pg@8.16.3)(redis@5.9.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.13.21)(@types/node@20.19.13)(typescript@5.9.2)))
       '@sentry/nestjs':
         specifier: ^10.14.0
         version: 10.14.0(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@10.4.20(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@10.4.20)(reflect-metadata@0.2.2)(rxjs@7.8.2))
@@ -78,8 +78,8 @@ importers:
         specifier: ^1.18.2
         version: 1.18.2
       ioredis:
-        specifier: ^5.8.1
-        version: 5.8.1
+        specifier: ^5.8.2
+        version: 5.8.2
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -106,7 +106,7 @@ importers:
         version: 7.8.2
       typeorm:
         specifier: ^0.3.27
-        version: 0.3.27(ioredis@5.8.1)(pg@8.16.3)(redis@5.9.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.13.21)(@types/node@20.19.13)(typescript@5.9.2))
+        version: 0.3.27(ioredis@5.8.2)(pg@8.16.3)(redis@5.9.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.13.21)(@types/node@20.19.13)(typescript@5.9.2))
       uuid:
         specifier: ^13.0.0
         version: 13.0.0
@@ -3078,8 +3078,8 @@ packages:
   inspect-with-kind@1.0.5:
     resolution: {integrity: sha512-MAQUJuIo7Xqk8EVNP+6d3CKq9c80hi4tjIbIAT6lmGW9W6WzlHiu9PS8uSuUYU+Do+j1baiFp3H25XEVxDIG2g==}
 
-  ioredis@5.8.1:
-    resolution: {integrity: sha512-Qho8TgIamqEPdgiMadJwzRMW3TudIg6vpg4YONokGDudy4eqRIJtDbVX72pfLBcWxvbn3qm/40TyGUObdW4tLQ==}
+  ioredis@5.8.2:
+    resolution: {integrity: sha512-C6uC+kleiIMmjViJINWk80sOQw5lEzse1ZmvD+S/s8p8CWapftSaC+kocGTx6xrbrJ4WmYQGC08ffHLr6ToR6Q==}
     engines: {node: '>=12.22.0'}
 
   ipaddr.js@1.9.1:
@@ -5892,13 +5892,13 @@ snapshots:
       '@nestjs/core': 10.4.20(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@10.4.20)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       reflect-metadata: 0.2.2
 
-  '@nestjs/typeorm@11.0.0(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@10.4.20(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@10.4.20)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.27(ioredis@5.8.1)(pg@8.16.3)(redis@5.9.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.13.21)(@types/node@20.19.13)(typescript@5.9.2)))':
+  '@nestjs/typeorm@11.0.0(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@10.4.20(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@10.4.20)(reflect-metadata@0.2.2)(rxjs@7.8.2))(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.27(ioredis@5.8.2)(pg@8.16.3)(redis@5.9.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.13.21)(@types/node@20.19.13)(typescript@5.9.2)))':
     dependencies:
       '@nestjs/common': 10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/core': 10.4.20(@nestjs/common@10.4.20(class-transformer@0.5.1)(class-validator@0.14.2)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@10.4.20)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       reflect-metadata: 0.2.2
       rxjs: 7.8.2
-      typeorm: 0.3.27(ioredis@5.8.1)(pg@8.16.3)(redis@5.9.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.13.21)(@types/node@20.19.13)(typescript@5.9.2))
+      typeorm: 0.3.27(ioredis@5.8.2)(pg@8.16.3)(redis@5.9.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.13.21)(@types/node@20.19.13)(typescript@5.9.2))
 
   '@noble/hashes@1.8.0': {}
 
@@ -8448,7 +8448,7 @@ snapshots:
     dependencies:
       kind-of: 6.0.3
 
-  ioredis@5.8.1:
+  ioredis@5.8.2:
     dependencies:
       '@ioredis/commands': 1.4.0
       cluster-key-slot: 1.1.2
@@ -10561,7 +10561,7 @@ snapshots:
 
   typedarray@0.0.6: {}
 
-  typeorm@0.3.27(ioredis@5.8.1)(pg@8.16.3)(redis@5.9.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.13.21)(@types/node@20.19.13)(typescript@5.9.2)):
+  typeorm@0.3.27(ioredis@5.8.2)(pg@8.16.3)(redis@5.9.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.13.21)(@types/node@20.19.13)(typescript@5.9.2)):
     dependencies:
       '@sqltools/formatter': 1.2.5
       ansis: 3.17.0
@@ -10579,7 +10579,7 @@ snapshots:
       uuid: 11.1.0
       yargs: 17.7.2
     optionalDependencies:
-      ioredis: 5.8.1
+      ioredis: 5.8.2
       pg: 8.16.3
       redis: 5.9.0
       ts-node: 10.9.2(@swc/core@1.13.21)(@types/node@20.19.13)(typescript@5.9.2)
