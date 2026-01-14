@@ -86,6 +86,33 @@ export class UserInviteService {
     return true;
   }
 
+  async getInvite(idOrInviteToken: number | string) {
+    const where =
+      typeof idOrInviteToken === 'number'
+        ? { id: idOrInviteToken }
+        : { uid: idOrInviteToken };
+
+    const invite = await this.userInviteRepository.findOne({
+      where: {
+        ...where,
+        team: {
+          id: this.contextService.getData('tenantId'),
+        },
+      },
+      select: {
+        id: true,
+        uid: true,
+        createdAt: true,
+        updatedAt: true,
+        team: {
+          name: true,
+        },
+      },
+      relations: ['team'],
+    });
+    return invite;
+  }
+
   async getInvites() {
     const teamId = this.contextService.getData('tenantId');
     return this.userInviteRepository.find({

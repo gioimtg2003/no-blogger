@@ -1,4 +1,5 @@
 import { PermissionGuard } from '@common/guard';
+import { ParseNumberOrStringPipe } from '@common/pipes';
 import {
   ActionPermission,
   InviteType,
@@ -19,6 +20,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { ApiOkResponse, ApiParam } from '@nestjs/swagger';
 import { SendInviteDto } from './dto';
 import { UseInvitePublicGuard } from './guards';
 import { UserInviteService } from './user-invite.service';
@@ -38,6 +40,26 @@ export class UserInviteController {
   )
   getInvites() {
     return this.userInviteService.getInvites();
+  }
+
+  @ApiParam({
+    name: 'idOrInviteToken',
+    required: true,
+    description: 'ID (number) or invite token (string)',
+    schema: {
+      oneOf: [{ type: 'number' }, { type: 'string' }],
+    },
+  })
+  @Get('/:idOrInviteToken')
+  @RequirePolicies((ability) =>
+    ability.can(ActionPermission.read, SYSTEM_RESOURCE['user-invite']),
+  )
+  @ApiOkResponse({ description: 'Success get detail invite user' })
+  getDetail(
+    @Param('idOrInviteToken', ParseNumberOrStringPipe)
+    idOrInviteToken: number | string,
+  ) {
+    return this.userInviteService.getInvite(idOrInviteToken);
   }
 
   @Post('/')
