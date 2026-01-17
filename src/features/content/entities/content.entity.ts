@@ -1,9 +1,8 @@
 import { BaseEntity } from '@common/entities/base.entity';
 import { DATABASE_TABLES, PostStatus, SYSTEM_RESOURCE } from '@constants';
-import { ContentAudit } from '@features/content-audit/entities/post-audit.entity';
 import { Resource } from '@features/resources/entities/resource.entity';
 import { Team } from '@features/teams/entities/team.entity';
-import { Column, Entity, ManyToOne, OneToMany, Relation } from 'typeorm';
+import { Column, Entity, ManyToOne, Relation } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 
 @Entity(DATABASE_TABLES.CONTENT)
@@ -36,9 +35,6 @@ export class Content extends BaseEntity {
     nullable: true,
   })
   resource: Relation<Resource>;
-
-  @OneToMany(() => ContentAudit, (contentAudit) => contentAudit.content)
-  audits: Relation<ContentAudit>[];
 
   @ManyToOne(() => Team, (team) => team.contents, { nullable: false })
   team: Relation<Team>;

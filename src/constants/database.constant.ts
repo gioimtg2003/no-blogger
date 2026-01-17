@@ -12,6 +12,7 @@ export const DATABASE_TABLES = {
   CONTENT_AUDITS: 'content_audits',
   USER_INVITES: 'user_invites',
   USER_JOIN_REQUESTS: 'user_join_requests',
+  AUDIT_LOGS: 'audit_logs',
 };
 
 export enum UserPlan {
@@ -34,9 +35,9 @@ export enum ResourceType {
   LANDING_PAGE = 5,
 }
 
-export enum ContentAuditAction {
+export enum AuditLogAction {
   created = 'created',
-  edited = 'edited',
+  updated = 'updated',
   deleted = 'deleted',
 }
 
