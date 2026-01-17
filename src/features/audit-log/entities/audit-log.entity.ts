@@ -32,6 +32,15 @@ export class AuditLog {
   @Column({ type: 'varchar', nullable: true })
   requestId?: string;
 
+  @Column({ type: 'jsonb', nullable: true })
+  previousValue?: Record<string, any>;
+
+  @Column({ type: 'jsonb', nullable: true })
+  newValue?: Record<string, any>;
+
+  @Column({ type: 'integer', nullable: true })
+  recordId?: number;
+
   @ManyToOne(() => User, { nullable: false })
   actor: Relation<User>;
 
