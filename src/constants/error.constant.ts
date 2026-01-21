@@ -30,6 +30,11 @@ export enum TeamError {
 /** *****************End***************** */
 
 /** *****************Resource***************** */
+export enum ResourceError {
+  RESOURCE_NOT_FOUND = 400,
+  SLUG_ALREADY_EXISTS = 401,
+  PARENT_NOT_FOUND = 402,
+}
 
 /** *****************End***************** */
 

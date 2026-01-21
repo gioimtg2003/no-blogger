@@ -3,6 +3,7 @@ import { AsyncLocalStorage } from 'async_hooks';
 
 export interface BaseTraceContext {
   tenantId: number;
+  userId?: number;
 
   // Additional fields can be added as needed
   ipAddress: string;

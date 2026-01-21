@@ -1,6 +1,6 @@
-import { ContextService } from '@common/modules/context';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ClsService } from 'nestjs-cls';
 import { In, Repository } from 'typeorm';
 import { Content } from './entities/content.entity';
 
@@ -9,7 +9,7 @@ export class ContentService {
   constructor(
     @InjectRepository(Content)
     private readonly contentRepository: Repository<Content>,
-    private readonly contextService: ContextService,
+    private readonly cls: ClsService,
   ) {}
 
   async findAll(ids: number[] = []) {
@@ -17,20 +17,20 @@ export class ContentService {
       return this.contentRepository.find({
         where: {
           id: In(ids),
-          team: { id: this.contextService.getData('tenantId') },
+          team: { id: this.cls.get('tenantId') },
         },
         select: ['id', 'body', 'metadata'],
       });
     }
     return this.contentRepository.find({
-      where: { team: { id: this.contextService.getData('tenantId') } },
+      where: { team: { id: this.cls.get('tenantId') } },
       select: ['id', 'body', 'metadata'],
     });
   }
 
   async findById(id: number) {
     return this.contentRepository.findOne({
-      where: { id, team: { id: this.contextService.getData('tenantId') } },
+      where: { id, team: { id: this.cls.get('tenantId') } },
       relations: ['team'],
     });
   }

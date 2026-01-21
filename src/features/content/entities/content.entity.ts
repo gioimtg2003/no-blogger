@@ -18,8 +18,8 @@ export class Content extends BaseEntity {
   @Column({ type: 'jsonb', nullable: true, default: null })
   metadata?: Record<string, any>;
 
-  @ManyToOne(() => User, { nullable: false })
-  createdByUser: User;
+  @ManyToOne(() => User, (user) => user.contentCreated, { nullable: false })
+  createdByUser: Relation<User>;
 
   @Column('text', { array: true, default: [], nullable: true })
   tags?: string[];

@@ -41,7 +41,7 @@ export class AuditLog {
   @Column({ type: 'integer', nullable: true })
   recordId?: number;
 
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, (user) => user.auditLogs, { nullable: false })
   actor: Relation<User>;
 
   @CreateDateColumn({ type: 'timestamptz' })

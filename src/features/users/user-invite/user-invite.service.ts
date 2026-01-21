@@ -1,5 +1,4 @@
 import { MailService } from '@common/modules';
-import { ContextService } from '@common/modules/context';
 import {
   InviteType,
   TeamError,
@@ -13,6 +12,7 @@ import { IUserSession } from '@interfaces';
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ClsService } from 'nestjs-cls';
 import { Repository } from 'typeorm';
 import { UserInvite } from '../entities/user-invite.entity';
 import { UserJoinRequest } from '../entities/user-join-request.entity';
@@ -29,7 +29,7 @@ export class UserInviteService {
     @InjectRepository(UserJoinRequest)
     private readonly userJoinRequestRepository: Repository<UserJoinRequest>,
     private readonly cryptoService: CryptoService,
-    private readonly contextService: ContextService,
+    private readonly cls: ClsService,
     private readonly mailService: MailService,
     private readonly teamService: TeamService,
     private readonly userTeamService: UserTeamService,
@@ -39,11 +39,13 @@ export class UserInviteService {
   async create(userId: number, inviteData: Partial<UserInvite>) {
     const { email, type } = inviteData ?? {};
 
-    const finUser = await this.userTeamService.findUserByIdOrEmail(
+    const findUser = await this.userTeamService.findUserByIdOrEmail(
       email ?? '',
       ['id'],
+      [],
+      false,
     );
-    if (finUser) {
+    if (findUser) {
       this.logger.error(
         `User with email ${email} already exists, cannot create invite`,
       );
@@ -96,7 +98,7 @@ export class UserInviteService {
       where: {
         ...where,
         team: {
-          id: this.contextService.getData('tenantId'),
+          id: this.cls.get('tenantId'),
         },
       },
       select: {
@@ -114,7 +116,7 @@ export class UserInviteService {
   }
 
   async getInvites() {
-    const teamId = this.contextService.getData('tenantId');
+    const teamId = this.cls.get('tenantId');
     return this.userInviteRepository.find({
       where: { team: { id: teamId } },
       relations: ['invitedBy'],
@@ -134,15 +136,14 @@ export class UserInviteService {
     type: InviteType = InviteType.PRIVATE,
     email?: string | string[],
   ) {
-    const team = await this.teamService.findById(
-      this.contextService.getData('tenantId'),
-      { id: true, name: true },
-    );
+    console.log('userId ', userId);
+    const team = await this.teamService.findById(this.cls.get('tenantId'), {
+      id: true,
+      name: true,
+    });
 
     if (!team) {
-      this.logger.error(
-        `Team ${this.contextService.getData('tenantId')} not found`,
-      );
+      this.logger.error(`Team ${this.cls.get('tenantId')} not found`);
 
       throw new BadRequestException(TeamError.TEAM_NOT_FOUND);
     }
@@ -287,7 +288,7 @@ export class UserInviteService {
       // for public invite, create a join request with PENDING status
       const joinRequest = this.userJoinRequestRepository.create({
         user: { id: user.id },
-        team: { id: this.contextService.getData('tenantId') },
+        team: { id: this.cls.get('tenantId') },
         invite: { id: invite.id },
       });
       await this.userJoinRequestRepository.save(joinRequest);
@@ -302,7 +303,7 @@ export class UserInviteService {
   async generateInvitePublicUrl(userIdInvite: number) {
     // get first public url invite for the team, if exists return it else create new
     const existingInvite = await this.userInviteRepository.findOne({
-      where: { team: { id: this.contextService.getData('tenantId') } },
+      where: { team: { id: this.cls.get('tenantId') } },
     });
     const dateNow = Date.now();
 
@@ -317,15 +318,13 @@ export class UserInviteService {
       };
     }
 
-    const team = await this.teamService.findById(
-      this.contextService.getData('tenantId'),
-      { id: true, name: true },
-    );
+    const team = await this.teamService.findById(this.cls.get('tenantId'), {
+      id: true,
+      name: true,
+    });
 
     if (!team) {
-      this.logger.error(
-        `Team ${this.contextService.getData('tenantId')} not found`,
-      );
+      this.logger.error(`Team ${this.cls.get('tenantId')} not found`);
 
       throw new BadRequestException(TeamError.TEAM_NOT_FOUND);
     }
@@ -346,7 +345,7 @@ export class UserInviteService {
   }
 
   async findAllJoinRequests() {
-    const teamId = this.contextService.getData('tenantId');
+    const teamId = this.cls.get('tenantId');
 
     return this.userJoinRequestRepository.find({
       where: { team: { id: teamId } },

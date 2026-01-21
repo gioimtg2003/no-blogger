@@ -46,7 +46,7 @@ export class TeamController {
   }
 
   @ApiOperation({ summary: 'Create team (workspace)' })
-  @UseGuards(PermissionGuard)
+  @UseGuards(PermissionGuard, UserAuthGuard)
   @RequirePolicies((ability) => {
     return ability.can(ActionPermission.create, SYSTEM_RESOURCE.team);
   })

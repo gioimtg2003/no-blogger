@@ -1,4 +1,3 @@
-import { ContextModule } from '@common/modules/context';
 import { CryptoModule } from '@features/crypto';
 import { AuthSerializer } from '@features/passport';
 import { UserInviteModule, UserModule } from '@features/users';
@@ -13,7 +12,6 @@ import { UserAuthService } from './user-auth.service';
     UserModule,
     CryptoModule,
     PassportModule.register({ session: true }),
-    ContextModule,
     UserInviteModule,
   ],
   controllers: [UserAuthController],

@@ -1,10 +1,10 @@
 import { MailService } from '@common/modules';
-import { ContextService } from '@common/modules/context';
 import { CryptoService } from '@features/crypto';
 import { TeamService } from '@features/teams';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { ClsService } from 'nestjs-cls';
 import { UserInvite } from '../entities/user-invite.entity';
 import { UserJoinRequest } from '../entities/user-join-request.entity';
 import { UserTeamService } from '../user-team';
@@ -34,7 +34,7 @@ describe('UserInviteService', () => {
           useValue: mockUserInviteRepository,
         },
         { provide: CryptoService, useValue: mockSimpleProvider },
-        { provide: ContextService, useValue: mockSimpleProvider },
+        { provide: ClsService, useValue: mockSimpleProvider },
         { provide: MailService, useValue: mockSimpleProvider },
         { provide: TeamService, useValue: mockSimpleProvider },
         { provide: UserTeamService, useValue: mockSimpleProvider },

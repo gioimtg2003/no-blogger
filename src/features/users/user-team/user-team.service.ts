@@ -1,4 +1,3 @@
-import { ContextService } from '@common/modules/context';
 import { DATABASE_TABLES, LIMIT_PLAN_CREATE_TEAM, UserError } from '@constants';
 import { TeamService } from '@features/teams/team.service';
 import {
@@ -8,6 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ClsService } from 'nestjs-cls';
 import { FindOneOptions, In, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 
@@ -17,19 +17,17 @@ export class UserTeamService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly teamService: TeamService,
-    private readonly contextService: ContextService,
+    private readonly cls: ClsService,
   ) {}
 
   async getAllUsersInTeam(ids: number[] = []) {
-    this.logger.log(
-      `Getting all users in team ${this.contextService.getData('tenantId')}`,
-    );
+    this.logger.log(`Getting all users in team ${this.cls.get('tenantId')}`);
 
     if (ids?.length > 0) {
       return this.userRepository.find({
         where: {
           id: In(ids),
-          teams: { id: this.contextService.getData('tenantId') },
+          teams: { id: this.cls.get('tenantId') },
         },
         select: {
           id: true,
@@ -43,7 +41,7 @@ export class UserTeamService {
     }
 
     const users = await this.userRepository.find({
-      where: { teams: { id: this.contextService.getData('tenantId') } },
+      where: { teams: { id: this.cls.get('tenantId') } },
       select: {
         id: true,
         email: true,
@@ -61,19 +59,20 @@ export class UserTeamService {
     query: number | string,
     selectFields: FindOneOptions<User>['select'] = [],
     relations: string[] = [],
+    isCheckUser = true,
   ) {
     const whereCondition =
       typeof query === 'number' ? { id: query } : { email: query as string };
     const user = await this.userRepository.findOne({
       where: {
         ...whereCondition,
-        teams: { id: In([this.contextService.getData('tenantId')]) },
+        teams: { id: In([this.cls.get('tenantId')]) },
       },
       select: selectFields,
       relations: relations?.length ? relations : undefined,
     });
 
-    if (!user) {
+    if (!user && isCheckUser) {
       throw new BadRequestException(UserError.USER_NOT_FOUND);
     }
 
@@ -138,7 +137,7 @@ export class UserTeamService {
    */
   async addUserToTeam(userId: number, teamId?: number) {
     this.logger.log(
-      `Adding user ${userId} to team ${this.contextService.getData('tenantId')}`,
+      `Adding user ${userId} to team ${this.cls.get('tenantId')}`,
     );
 
     const user = await this.findUserByIdOrEmail(
@@ -156,8 +155,7 @@ export class UserTeamService {
 
     if (
       !user?.teams?.find(
-        (team) =>
-          team.id === (teamId ?? this.contextService.getData('tenantId')),
+        (team) => team.id === (teamId ?? this.cls.get('tenantId')),
       )
     )
       throw new ForbiddenException(UserError.USER_CANNOT_JOIN_TEAM);
@@ -174,7 +172,7 @@ export class UserTeamService {
       ...user,
       teams: [
         ...(user.teams ?? []),
-        { id: teamId ?? this.contextService.getData('tenantId') },
+        { id: teamId ?? this.cls.get('tenantId') },
       ],
     });
 
@@ -187,7 +185,7 @@ export class UserTeamService {
   async createUserToTeam(userId: number, user: Partial<User>) {
     const { email } = user;
     this.logger.log(
-      `Creating user ${user.email} to team ${this.contextService.getData('tenantId')}`,
+      `Creating user ${user.email} to team ${this.cls.get('tenantId')}`,
     );
 
     const currentUser = await this.findUserByIdOrEmail(
@@ -203,9 +201,7 @@ export class UserTeamService {
     );
 
     if (
-      !currentUser?.teams?.find(
-        (team) => team.id === this.contextService.getData('tenantId'),
-      )
+      !currentUser?.teams?.find((team) => team.id === this.cls.get('tenantId'))
     )
       throw new ForbiddenException(UserError.CREATE_USER_FAILED);
 
@@ -218,7 +214,7 @@ export class UserTeamService {
     const newUser = this.userRepository.create({
       email,
       password: '', // set empty password, user can set password later
-      teams: [{ id: this.contextService.getData('tenantId') }],
+      teams: [{ id: this.cls.get('tenantId') }],
     });
     const saved = await this.userRepository.save(newUser);
 

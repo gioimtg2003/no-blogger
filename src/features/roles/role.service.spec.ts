@@ -1,6 +1,6 @@
-import { ContextService } from '@common/modules/context';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { ClsService } from 'nestjs-cls';
 import { CreateRoleDto } from './dto';
 import { Role } from './entities/role.entity';
 import { RoleService } from './role.service';
@@ -27,9 +27,9 @@ describe('Role Service', () => {
           },
         },
         {
-          provide: ContextService,
+          provide: ClsService,
           useValue: {
-            getData: jest.fn().mockReturnValue(1),
+            get: jest.fn().mockReturnValue(1),
           },
         },
       ],

@@ -1,5 +1,4 @@
 import { MailModule } from '@common/modules';
-import { ContextModule } from '@common/modules/context';
 import { CryptoModule } from '@features/crypto';
 import { TeamModule } from '@features/teams';
 import { Module } from '@nestjs/common';
@@ -16,7 +15,6 @@ import { UserInviteService } from './user-invite.service';
     TypeOrmModule.forFeature([UserInvite, UserJoinRequest]),
     CryptoModule,
     MailModule,
-    ContextModule,
     TeamModule,
     UserTeamModule,
     AbilityModule,

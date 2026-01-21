@@ -1,4 +1,3 @@
-import { ContextModule } from '@common/modules/context';
 import { ContentModule } from '@features/content';
 import { ResourceModule } from '@features/resources';
 import { RoleModule } from '@features/roles';
@@ -16,7 +15,6 @@ import { PolicyService } from './policy.service';
     UserTeamModule,
     RoleModule,
     ContentModule,
-    ContextModule,
     ResourceModule,
   ],
   controllers: [PolicyController, PolicyResourcesController],

@@ -1,8 +1,8 @@
 import { MailModule } from '@common/modules';
-import { ContextModule } from '@common/modules/context';
+import { AuditLogSubscriber } from '@common/subscriber';
 import { SYSTEM_RESOURCE, VERSIONING_API } from '@constants';
+import { AuditLogModule } from '@features/audit-log';
 import { ContentModule } from '@features/content';
-import { ContentAuditModule } from '@features/content-audit';
 import { PolicyModule } from '@features/policy';
 import { RedisModule } from '@features/redis';
 import { ResourceModule } from '@features/resources';
@@ -25,6 +25,7 @@ import { APP_FILTER } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SentryGlobalFilter, SentryModule } from '@sentry/nestjs/setup';
+import { ClsModule } from 'nestjs-cls';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -71,6 +72,12 @@ import { ContextMiddleware, RequestMiddleware } from './middleware';
         },
       },
     }),
+    ClsModule.forRoot({
+      global: true, // Makes it available globally without extra imports
+      middleware: {
+        mount: true, // Use this to mount middleware for handling requests
+      },
+    }),
     EventEmitterModule.forRoot(),
     RedisModule,
     ResourceModule,
@@ -80,11 +87,10 @@ import { ContextMiddleware, RequestMiddleware } from './middleware';
     UserAuthModule,
     PolicyModule,
     UserTeamModule,
-    ContentAuditModule,
     ContentModule,
-    ContextModule,
     MailModule,
     UserInviteModule,
+    AuditLogModule,
   ],
   controllers: [AppController],
   providers: [
@@ -93,6 +99,7 @@ import { ContextMiddleware, RequestMiddleware } from './middleware';
       useClass: SentryGlobalFilter,
     },
     AppService,
+    AuditLogSubscriber,
   ],
 })
 export class AppModule implements NestModule {

@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   ArrayNotEmpty,
   IsArray,
@@ -7,6 +8,12 @@ import {
 } from 'class-validator';
 
 export class SendInviteDto {
+  @ApiProperty({
+    description:
+      'The email address or array of email addresses to send the invite to',
+    example: 'user@example.com',
+    enum: ['user@example.com', ['user1@example.com', 'user2@example.com']],
+  })
   @IsNotEmpty({ message: 'Email is required' })
   @ValidateIf((_, value) => typeof value === 'string')
   @IsEmail({}, { message: 'Invalid email address' })

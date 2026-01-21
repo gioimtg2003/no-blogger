@@ -1,4 +1,3 @@
-import { ContextModule } from '@common/modules/context';
 import { LocatorResourceModule } from '@features/locator-resource';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -12,7 +11,6 @@ import { ResourceService } from './resource.service';
     TypeOrmModule.forFeature([Resource]),
     AbilityModule,
     LocatorResourceModule,
-    ContextModule,
   ],
   controllers: [ResourceController],
   providers: [ResourceService],

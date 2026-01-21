@@ -1,4 +1,3 @@
-import { ContextService } from '@common/modules/context';
 import { LIMIT_PLAN_CREATE_TEAM, TeamError, UserError } from '@constants';
 import { User } from '@features/users/entities/user.entity';
 import {
@@ -8,6 +7,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ClsService } from 'nestjs-cls';
 import { DataSource, FindOneOptions, Repository } from 'typeorm';
 import { CreateTeamDto } from './dto';
 import { Team } from './entities/team.entity';
@@ -19,7 +19,7 @@ export class TeamService {
   constructor(
     @InjectRepository(Team) private readonly teamRepository: Repository<Team>,
     private readonly dataSource: DataSource,
-    private readonly contextService: ContextService,
+    private readonly cls: ClsService,
   ) {}
 
   async findById(
@@ -121,7 +121,7 @@ export class TeamService {
   }
 
   async makePublicAccess() {
-    const workspaceId = this.contextService.getData('tenantId');
+    const workspaceId = this.cls.get('tenantId');
 
     await this.update(workspaceId, { isAutoAcceptMember: true });
 

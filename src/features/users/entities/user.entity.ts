@@ -1,5 +1,7 @@
 import { BaseEntity } from '@common/entities/base.entity';
 import { DATABASE_TABLES, UserPlan } from '@constants';
+import { AuditLog } from '@features/audit-log/entities/audit-log.entity';
+import { Content } from '@features/content/entities/content.entity';
 import { Role } from '@features/roles/entities/role.entity';
 import { Team } from '@features/teams/entities/team.entity';
 import {
@@ -43,4 +45,10 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Team, (team) => team.createdBy)
   teamsCreated: Relation<Team>[];
+
+  @OneToMany(() => AuditLog, (auditLog) => auditLog.actor)
+  auditLogs: Relation<AuditLog>[];
+
+  @OneToMany(() => Content, (content) => content.createdByUser)
+  contentCreated: Relation<Content>[];
 }

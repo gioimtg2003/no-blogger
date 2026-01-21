@@ -1,4 +1,3 @@
-import { ContextService } from '@common/modules/context';
 import {
   ActionPermission,
   Policy,
@@ -9,6 +8,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { parserPolicy } from '@utils';
 import { groupBy, omit } from 'lodash';
+import { ClsService } from 'nestjs-cls';
 import { In, Repository } from 'typeorm';
 import { CreateRoleDto, PermissionDto } from './dto';
 import { Role } from './entities/role.entity';
@@ -17,7 +17,7 @@ import { Role } from './entities/role.entity';
 export class RoleService {
   constructor(
     @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
-    private readonly contextService: ContextService,
+    private readonly cls: ClsService,
   ) {}
 
   async create(data: CreateRoleDto) {
@@ -28,7 +28,7 @@ export class RoleService {
       name,
       description,
       permission: permissions,
-      team: { id: this.contextService.getData('tenantId') },
+      team: { id: this.cls.get('tenantId') },
     });
 
     await this.roleRepository.save(role);
@@ -93,13 +93,13 @@ export class RoleService {
       roles = await this.roleRepository.find({
         where: {
           id: In(ids),
-          team: { id: this.contextService.getData('tenantId') },
+          team: { id: this.cls.get('tenantId') },
         },
         select: ['id', 'name', 'description', 'permission'],
       });
     }
     roles = await this.roleRepository.find({
-      where: { team: { id: this.contextService.getData('tenantId') } },
+      where: { team: { id: this.cls.get('tenantId') } },
       select: ['id', 'name', 'description', 'permission'],
     });
 
@@ -113,7 +113,7 @@ export class RoleService {
     const role = await this.roleRepository.findOne({
       where: {
         id,
-        team: { id: this.contextService.getData('tenantId') },
+        team: { id: this.cls.get('tenantId') },
       },
       select: ['id', 'name', 'description', 'permission'],
     });
@@ -126,7 +126,7 @@ export class RoleService {
   async delete(id: number) {
     const result = await this.roleRepository.delete({
       id,
-      team: { id: this.contextService.getData('tenantId') },
+      team: { id: this.cls.get('tenantId') },
     });
     return result.affected > 0;
   }
@@ -138,7 +138,7 @@ export class RoleService {
     const result = await this.roleRepository.update(
       {
         id,
-        team: { id: this.contextService.getData('tenantId') },
+        team: { id: this.cls.get('tenantId') },
       },
       {
         name,
@@ -154,7 +154,7 @@ export class RoleService {
     const result = await this.roleRepository.update(
       {
         id: roleId,
-        team: { id: this.contextService.getData('tenantId') },
+        team: { id: this.cls.get('tenantId') },
       },
       {
         team: { id: toTeamId },
@@ -165,7 +165,7 @@ export class RoleService {
       const role = await this.roleRepository.findOne({
         where: {
           id: roleId,
-          team: { id: this.contextService.getData('tenantId') },
+          team: { id: this.cls.get('tenantId') },
         },
       });
       const { description, name, permission } = role ?? {};
