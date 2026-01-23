@@ -35,6 +35,10 @@ export enum ResourceError {
   SLUG_ALREADY_EXISTS = 401,
   PARENT_NOT_FOUND = 402,
   RESOURCE_LIMIT_REACHED = 403,
+  RESOURCE_CANNOT_UPDATE = 404,
+  RESOURCE_CANNOT_DELETE = 405,
+  RESOURCE_HAS_CHILDREN = 406,
+  RESOURCE_IN_USE = 407,
 }
 
 /** *****************End***************** */
