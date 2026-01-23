@@ -1,4 +1,4 @@
-import { DATABASE_TABLES, LIMIT_PLAN_CREATE_TEAM, UserError } from '@constants';
+import { DATABASE_TABLES, LIMIT_USER_JOIN_TEAM, UserError } from '@constants';
 import { TeamService } from '@features/teams/team.service';
 import {
   BadRequestException,
@@ -162,7 +162,7 @@ export class UserTeamService {
 
     //TODO: check logic maximum team join based on plan
     const countTeams = user?.teams?.length ?? 0;
-    const maxTeamJoin = LIMIT_PLAN_CREATE_TEAM[user.plan] ?? 0;
+    const maxTeamJoin = LIMIT_USER_JOIN_TEAM[user.plan] ?? 0;
 
     if (countTeams >= maxTeamJoin) {
       throw new BadRequestException(UserError.USER_REACHES_JOIN_TEAM_LIMIT);
@@ -206,7 +206,7 @@ export class UserTeamService {
       throw new ForbiddenException(UserError.CREATE_USER_FAILED);
 
     const countTeams = currentUser?.teams?.length ?? 0;
-    const maxTeamJoin = LIMIT_PLAN_CREATE_TEAM[currentUser.plan] ?? 0;
+    const maxTeamJoin = LIMIT_USER_JOIN_TEAM[currentUser.plan] ?? 0;
     if (countTeams >= maxTeamJoin) {
       throw new BadRequestException(UserError.USER_REACHES_JOIN_TEAM_LIMIT);
     }

@@ -1,4 +1,4 @@
-import { LIMIT_PLAN_CREATE_TEAM, TeamError, UserError } from '@constants';
+import { LIMIT_USER_JOIN_TEAM, TeamError, UserError } from '@constants';
 import { User } from '@features/users/entities/user.entity';
 import {
   ForbiddenException,
@@ -55,7 +55,7 @@ export class TeamService {
         where: { createdBy: { id: user.id } },
       });
 
-      const limit = LIMIT_PLAN_CREATE_TEAM[user.plan];
+      const limit = LIMIT_USER_JOIN_TEAM[user.plan];
       if (teamCount > limit) {
         throw new ForbiddenException(UserError.USER_REACHES_CREATE_TEAM_LIMIT);
       }
