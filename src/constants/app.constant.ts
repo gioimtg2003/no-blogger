@@ -1,3 +1,5 @@
+import { UserPlan } from './database.constant';
+
 export const SESSION_MAX_AGE = 1000 * 60 * 60 * 24; // 48 hours
 export const USER_INVITE_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24 * 7; // 7 days
 
@@ -23,4 +25,10 @@ export const USER_EMAIL = {
   SUPPORT: 'support',
   SYSTEM: 'system',
   ADMIN: 'admin',
+};
+
+export const PLAN_RESOURCE: Record<UserPlan, number> = {
+  [UserPlan.FREE]: 6,
+  [UserPlan.PREMIUM]: 12,
+  [UserPlan.UNLIMITED]: 999,
 };

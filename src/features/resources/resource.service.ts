@@ -1,4 +1,5 @@
-import { ResourceError } from '@constants';
+import { PLAN_RESOURCE, ResourceError } from '@constants';
+import { IUserSession } from '@interfaces';
 import {
   BadRequestException,
   ConflictException,
@@ -57,10 +58,29 @@ export class ResourceService {
     });
   }
 
-  async create(data: Partial<Resource & { parentId: number }>) {
+  async create(
+    data: Partial<Resource & { parentId: number }>,
+    user: IUserSession,
+  ) {
     // TODO: handle limit with plan for resource creation
     const teamIdFromContext = this.cls.get('tenantId');
     const { slug, parentId, ...rest } = data;
+
+    const resourceCount = await this.resourceRepository.count({
+      where: {
+        team: {
+          id: teamIdFromContext,
+        },
+      },
+    });
+
+    if (
+      PLAN_RESOURCE[user?.plan] &&
+      resourceCount >= PLAN_RESOURCE[user?.plan]
+    ) {
+      this.logger.warn(`Resource limit reached for plan ${user?.plan}`);
+      throw new ConflictException(ResourceError.RESOURCE_LIMIT_REACHED);
+    }
 
     const findSlug = await this.findSlug(slug);
     if (findSlug) {

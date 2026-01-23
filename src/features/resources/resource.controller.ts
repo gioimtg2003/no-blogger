@@ -1,6 +1,8 @@
 import { PermissionGuard } from '@common/guard';
 import { ActionPermission, SYSTEM_RESOURCE, VERSIONING_API } from '@constants';
-import { HeaderTeamAlias, RequirePolicies } from '@decorators';
+import { CurrentUser, HeaderTeamAlias, RequirePolicies } from '@decorators';
+import { UserAuthGuard } from '@features/user-auth/guards';
+import { IUserSession } from '@interfaces';
 import {
   Body,
   Controller,
@@ -38,7 +40,7 @@ export class ResourceController {
     return this.resourceService.get(resourceIds);
   }
 
-  @UseGuards(PermissionGuard)
+  @UseGuards(UserAuthGuard, PermissionGuard)
   @RequirePolicies((ability) => {
     return ability.can(ActionPermission.create, SYSTEM_RESOURCE.resource);
   })
@@ -48,7 +50,10 @@ export class ResourceController {
     description: 'Resource created successfully',
     type: Boolean,
   })
-  create(@Body() createResourceDto: CreateResourceDto) {
-    return this.resourceService.create(createResourceDto);
+  create(
+    @Body() createResourceDto: CreateResourceDto,
+    @CurrentUser() user: IUserSession,
+  ) {
+    return this.resourceService.create(createResourceDto, user);
   }
 }
