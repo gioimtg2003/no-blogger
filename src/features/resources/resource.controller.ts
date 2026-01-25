@@ -1,3 +1,4 @@
+import { PaginatedResponseDto } from '@common/dto';
 import { PermissionGuard } from '@common/guard';
 import { ActionPermission, SYSTEM_RESOURCE, VERSIONING_API } from '@constants';
 import { CurrentUser, HeaderTeamAlias, RequirePolicies } from '@decorators';
@@ -28,7 +29,6 @@ import {
 import {
   CreateResourceDto,
   GetResourcesQueryDto,
-  PaginatedResourceResponseDto,
   ResourceResponseDto,
   UpdateResourceDto,
 } from './dto';
@@ -52,11 +52,11 @@ export class ResourceController {
   @ApiOperation({ summary: 'Get all resources with pagination and filtering' })
   @ApiOkResponse({
     description: 'Resources retrieved successfully',
-    type: PaginatedResourceResponseDto,
+    type: PaginatedResponseDto,
   })
   async findAll(
     @Query() query: GetResourcesQueryDto,
-  ): Promise<PaginatedResourceResponseDto> {
+  ): Promise<PaginatedResponseDto<ResourceResponseDto>> {
     return this.resourceService.findAllPaginated(query);
   }
 

@@ -1,3 +1,4 @@
+import { PaginatedResponseDto } from '@common/dto';
 import { LIMIT_USER_JOIN_TEAM, TeamError, UserError } from '@constants';
 import { User } from '@features/users/entities/user.entity';
 import {
@@ -8,8 +9,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ClsService } from 'nestjs-cls';
-import { DataSource, FindOneOptions, Repository } from 'typeorm';
-import { CreateTeamDto } from './dto';
+import { DataSource, FindOneOptions, ILike, Repository } from 'typeorm';
+import { CreateTeamDto, GetTeamsQueryDto } from './dto';
 import { Team } from './entities/team.entity';
 
 @Injectable()
@@ -21,6 +22,36 @@ export class TeamService {
     private readonly dataSource: DataSource,
     private readonly cls: ClsService,
   ) {}
+
+  async findAllPaginated(
+    query: GetTeamsQueryDto,
+  ): Promise<PaginatedResponseDto<Team>> {
+    const { page = 1, limit = 10, search, userId } = query;
+
+    this.logger.log(`Getting paginated teams`);
+
+    const skip = (page - 1) * limit;
+
+    const whereConditions: any = {};
+
+    if (search) {
+      whereConditions.name = ILike(`%${search}%`);
+    }
+
+    if (userId) {
+      whereConditions.users = { id: userId };
+    }
+
+    const [data, total] = await this.teamRepository.findAndCount({
+      where: whereConditions,
+      select: ['id', 'name', 'alias', 'logoUrl', 'settings', 'createdAt'],
+      skip,
+      take: limit,
+      order: { createdAt: 'DESC' },
+    });
+
+    return new PaginatedResponseDto(data, total, page, limit);
+  }
 
   async findById(
     id: number,

@@ -1,3 +1,4 @@
+import { PaginatedResponseDto, SearchQueryDto } from '@common/dto';
 import {
   ActionPermission,
   Policy,
@@ -9,7 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { parserPolicy } from '@utils';
 import { groupBy, omit } from 'lodash';
 import { ClsService } from 'nestjs-cls';
-import { In, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 import { CreateRoleDto, PermissionDto } from './dto';
 import { Role } from './entities/role.entity';
 
@@ -86,7 +87,38 @@ export class RoleService {
     }));
   }
 
-  // TODO: Add pagination
+  async findAllPaginated(
+    query: SearchQueryDto,
+  ): Promise<PaginatedResponseDto<any>> {
+    const teamIdFromContext = this.cls.get('tenantId');
+    const { page = 1, limit = 10, search } = query;
+
+    const skip = (page - 1) * limit;
+
+    const whereConditions: any = {
+      team: { id: teamIdFromContext },
+    };
+
+    if (search) {
+      whereConditions.name = ILike(`%${search}%`);
+    }
+
+    const [data, total] = await this.roleRepository.findAndCount({
+      where: whereConditions,
+      select: ['id', 'name', 'description', 'permission'],
+      skip,
+      take: limit,
+      order: { createdAt: 'DESC' },
+    });
+
+    const formattedData = data.map((role) => ({
+      ...role,
+      permissions: this.parsePermissions(role?.permission ?? []),
+    }));
+
+    return new PaginatedResponseDto(formattedData, total, page, limit);
+  }
+
   async findAll(ids: number[] = []) {
     let roles = [];
     if (ids?.length > 0) {
@@ -97,11 +129,12 @@ export class RoleService {
         },
         select: ['id', 'name', 'description', 'permission'],
       });
+    } else {
+      roles = await this.roleRepository.find({
+        where: { team: { id: this.cls.get('tenantId') } },
+        select: ['id', 'name', 'description', 'permission'],
+      });
     }
-    roles = await this.roleRepository.find({
-      where: { team: { id: this.cls.get('tenantId') } },
-      select: ['id', 'name', 'description', 'permission'],
-    });
 
     return roles?.map((role) => ({
       ...role,

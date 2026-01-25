@@ -1,3 +1,4 @@
+import { PaginatedResponseDto, SearchQueryDto } from '@common/dto';
 import { DATABASE_TABLES, LIMIT_USER_JOIN_TEAM, UserError } from '@constants';
 import { TeamService } from '@features/teams/team.service';
 import {
@@ -8,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ClsService } from 'nestjs-cls';
-import { FindOneOptions, In, Repository } from 'typeorm';
+import { FindOneOptions, ILike, In, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 
 @Injectable()
@@ -19,6 +20,42 @@ export class UserTeamService {
     private readonly teamService: TeamService,
     private readonly cls: ClsService,
   ) {}
+
+  async findAllPaginated(
+    query: SearchQueryDto,
+  ): Promise<PaginatedResponseDto<User>> {
+    const teamIdFromContext = this.cls.get('tenantId');
+    const { page = 1, limit = 10, search } = query;
+
+    this.logger.log(`Getting paginated users in team ${teamIdFromContext}`);
+
+    const skip = (page - 1) * limit;
+
+    const whereConditions: any = {
+      teams: { id: teamIdFromContext },
+    };
+
+    if (search) {
+      whereConditions.email = ILike(`%${search}%`);
+    }
+
+    const [data, total] = await this.userRepository.findAndCount({
+      where: whereConditions,
+      select: {
+        id: true,
+        email: true,
+        createdAt: true,
+        teams: { name: true, id: true },
+        roles: { name: true, id: true },
+      },
+      relations: ['teams', 'roles'],
+      skip,
+      take: limit,
+      order: { createdAt: 'DESC' },
+    });
+
+    return new PaginatedResponseDto(data, total, page, limit);
+  }
 
   async getAllUsersInTeam(ids: number[] = []) {
     this.logger.log(`Getting all users in team ${this.cls.get('tenantId')}`);

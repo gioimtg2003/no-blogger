@@ -1,3 +1,4 @@
+import { PaginatedResponseDto } from '@common/dto';
 import { PLAN_RESOURCE, ResourceError } from '@constants';
 import { IUserSession } from '@interfaces';
 import {
@@ -10,11 +11,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { ClsService } from 'nestjs-cls';
 import { ILike, In, IsNull, Repository } from 'typeorm';
-import {
-  GetResourcesQueryDto,
-  PaginatedResourceResponseDto,
-  UpdateResourceDto,
-} from './dto';
+import { GetResourcesQueryDto, UpdateResourceDto } from './dto';
 import { Resource } from './entities/resource.entity';
 
 @Injectable()
@@ -49,7 +46,7 @@ export class ResourceService {
    */
   async findAllPaginated(
     query: GetResourcesQueryDto,
-  ): Promise<PaginatedResourceResponseDto> {
+  ): Promise<PaginatedResponseDto<any>> {
     const teamIdFromContext = this.cls.get('tenantId');
     const { page = 1, limit = 10, search, type, isActive, parentId } = query;
 
@@ -88,18 +85,12 @@ export class ResourceService {
       order: { createdAt: 'DESC' },
     });
 
-    return {
-      data: data.map((resource) => ({
-        ...resource,
-        parentId: resource.parent?.id,
-      })),
-      meta: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-      },
-    };
+    const formattedData = data.map((resource) => ({
+      ...resource,
+      parentId: resource.parent?.id,
+    }));
+
+    return new PaginatedResponseDto(formattedData, total, page, limit);
   }
 
   /**

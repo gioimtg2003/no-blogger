@@ -1,3 +1,4 @@
+import { PaginatedResponseDto, SearchQueryDto } from '@common/dto';
 import { PermissionGuard } from '@common/guard';
 import { ActionPermission, SYSTEM_RESOURCE, VERSIONING_API } from '@constants';
 import { HeaderTeamAlias, RequirePolicies } from '@decorators';
@@ -11,9 +12,10 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PolicyIds } from 'src/decorators/policy-ids.decorator';
 import { CreateRoleDto, MigrateRoleDto } from './dto';
 import { RoleService } from './role.service';
@@ -35,6 +37,16 @@ export class RoleController {
   @ApiOkResponse({ type: Boolean })
   create(@Body() data: CreateRoleDto) {
     return this.roleService.create(data);
+  }
+
+  @RequirePolicies((ability) => {
+    return ability.can(ActionPermission.read, SYSTEM_RESOURCE.role);
+  })
+  @Get('paginated')
+  @ApiOperation({ summary: 'Get paginated roles with search' })
+  @ApiOkResponse({ type: PaginatedResponseDto })
+  getPaginatedRoles(@Query() query: SearchQueryDto) {
+    return this.roleService.findAllPaginated(query);
   }
 
   @RequirePolicies((ability) => {
