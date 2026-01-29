@@ -1,5 +1,5 @@
 import { BaseEntity } from '@common/entities/base.entity';
-import { DATABASE_TABLES, SYSTEM_RESOURCE } from '@constants';
+import { DATABASE_TABLES, DomainStatus, SYSTEM_RESOURCE } from '@constants';
 import { Content } from '@features/content/entities/content.entity';
 import { Resource } from '@features/resources/entities/resource.entity';
 import { Role } from '@features/roles/entities/role.entity';
@@ -12,7 +12,6 @@ import {
   OneToMany,
   Relation,
 } from 'typeorm';
-
 @Entity(DATABASE_TABLES.TEAMS)
 export class Team extends BaseEntity {
   static readonly modelName = SYSTEM_RESOURCE.team;
@@ -23,6 +22,20 @@ export class Team extends BaseEntity {
   @Index({ unique: true })
   @Column({ type: 'varchar', length: 255, nullable: true, unique: true })
   alias?: string;
+
+  @Index({ unique: true })
+  @Column({ type: 'varchar', length: 255, nullable: true, unique: true })
+  customDomain?: string;
+
+  @Column({
+    type: 'enum',
+    enum: DomainStatus,
+    nullable: true,
+  })
+  domainStatus?: DomainStatus;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  cloudflareId?: string;
 
   @Column({ type: 'text', nullable: true })
   description?: string;
